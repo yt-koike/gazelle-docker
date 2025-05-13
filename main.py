@@ -12,6 +12,8 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 model.to(device)
 
 for inputFilename in os.listdir("/input/"):
+    if not inputFilename.split(".")[-1] in ["png","jpg","jpeg"]:
+        continue
     image = Image.open("/input/"+inputFilename).convert("RGB")
     input = {
         "images": transform(image).unsqueeze(dim=0).to(device),    # tensor of shape [1, 3, 448, 448]
@@ -24,6 +26,6 @@ for inputFilename in os.listdir("/input/"):
     predicted_heatmap = output["heatmap"][0][0]        # access prediction for first person in first image. Tensor of size [64, 64]
     predicted_inout = output["inout"][0][0]            # in/out of frame score (1 = in frame) (output["inout"] will be None  for non-inout models)
 
-    print(predicted_inout)
+    print("Predicted In Out", round(float(predicted_inout), 4))
     viz = visualize_heatmap(image, predicted_heatmap).convert("RGB")
     viz.save("/output/"+inputFilename)
