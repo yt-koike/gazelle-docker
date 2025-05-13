@@ -1,0 +1,13 @@
+services:
+  gazelle:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./input:/input
+      - ./output:/output
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [ gpu ]
